@@ -19,34 +19,48 @@ int main()
     // read all items from file
     vector<string> items;
     ifstream input_file;
-
-     try {
-        input_file.open(filename_items);
-        string line;
-        while (getline(input_file, line)) {
-            items.push_back(line);
+    ofstream inv;
+    input_file.open(filename_items);
+    try {
+        if (input_file) {
+            string line;
+            while (getline(input_file, line)) {
+                items.push_back(line);
+            }
+            input_file.close();
         }
-        input_file.close();
+        else
+			throw "File not found";
     }
-    catch() {
-        cout << "ERROR! Items file not found.\n";
-        return 0;
+	catch (const char* msg) {
+        inv.open(filename_inventory);
+        input_file.open(filename_inventory);
+		cout << "Error: " << msg << endl;
+		cout << "Exiting program" << endl;
+		return 1;
     }
 
     // read current inventory from file
     vector<string> inventory;
     input_file.open(filename_inventory);
-    if (input_file) {
-        string line;
-        while (getline(input_file, line)) {
-            inventory.push_back(line);
+    try {
+        if (input_file) {
+            string line;
+            while (getline(input_file, line)) {
+                inventory.push_back(line);
+            }
+            input_file.close();
         }
-        input_file.close();
+        else {
+            throw "Error";
+        }
     }
-    else {
-        cout << "ERROR! Inventory file not found.\n";
+    catch( const char* msg) {
+        cout << "Could not find file: wizard_inventory.txt" << endl
+             << "Wizard is starting with no inventory" << endl;
+		
+		
     }
-
     cout << "Wizard Inventory\n\n";
 
     cout << "COMMAND MENU\n"
@@ -54,6 +68,7 @@ int main()
         << "show - Show all items\n"
         << "drop - Drop an item\n"
         << "exit - Exit program\n";
+	
 
     string command = "";
     while (command != "exit") {
@@ -71,7 +86,21 @@ int main()
 
             char choice;
             cout << "Do you want to grab it? (y/n): ";
-            cin >> choice;
+            while (true)
+            {
+                cin >> choice;
+                try {
+                    if (cin.fail()) {
+                        throw "error";
+                    }
+                    else
+                        break;
+                }
+                catch (char* error) {
+                    cout << error << endl;
+                    break;
+                }
+            }
 
             if (choice == 'y') {
                 if (inventory.size() >= 4) {
@@ -111,19 +140,25 @@ int main()
         else {
             cout << "Invalid command. Try again.\n";
         }
-    }
+        ofstream output_file;
+        output_file.open(filename_inventory);
+        try {
+            if (output_file) {
+                string line;
+                for (string item : inventory) {
+                    output_file << item << '\n';
+                }
+                output_file.close();
+            }
+            else
+                throw "Could not find file: wizard_inventory.txt";
 
-    ofstream output_file;
-    output_file.open(filename_inventory);
-    if (output_file) {
-        string line;
-        for (string item : inventory) {
-            output_file << item << '\n';
         }
-        output_file.close();
-    }
-    else {
-        cout << "ERROR! Inventory file not found.\n";
+        catch (const char* msg) {
+            cout << msg << endl;
+            cout << "Wizard is starting with no inventory";
+
+        }
     }
 }
 //int main()
