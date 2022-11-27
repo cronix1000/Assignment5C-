@@ -61,7 +61,7 @@ int main()
 		
 		
     }
-    cout << "Wizard Inventory\n\n";
+    cout << "The Wizard Inventory program\n\n";
 
     cout << "COMMAND MENU\n"
         << "walk - Walk down the path\n"
