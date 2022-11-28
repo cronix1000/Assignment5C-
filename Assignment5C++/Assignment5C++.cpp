@@ -30,7 +30,7 @@ int main()
             input_file.close();
         }
         else
-			throw "File not found";
+			throw "File not found:`" + filename_items + "`";
     }
 	catch (const char* msg) {
         inv.open(filename_inventory);
@@ -52,12 +52,11 @@ int main()
             input_file.close();
         }
         else {
-            throw "Error";
+            throw "Error: could not open file `" + filename_inventory + "`";
         }
     }
     catch( const char* msg) {
-        cout << "Could not find file: wizard_inventory.txt" << endl
-             << "Wizard is starting with no inventory" << endl;
+        cout << msg << endl << "Wizard is starting with no inventory" << endl;
 		
 		
     }
